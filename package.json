@@ -1,0 +1,22 @@
+{
+  "name": "buddy-script-social-app",
+  "version": "1.0.0",
+  "description": "A social media application with React frontend and Node.js backend",
+  "main": "server/index.js",
+  "scripts": {
+    "client": "cd client && npm start",
+    "server": "cd server && npm run dev",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "install-client": "cd client && npm install",
+    "install-server": "cd server && npm install",
+    "install-all": "npm install && npm run install-client && npm run install-server",
+    "build": "cd client && npm run build"
+  },
+  "keywords": ["social-media", "react", "nodejs", "mongodb", "firebase"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
+
