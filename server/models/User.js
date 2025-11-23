@@ -26,6 +26,11 @@ const userSchema = new mongoose.Schema({
   profilePicture: {
     type: String,
     default: 'https://i.ibb.co.com/9Hp937d8/629.jpg'
+  },
+  firebaseUid: {
+    type: String,
+    unique: true,
+    sparse: true  // Allows multiple null values, only enforces uniqueness for non-null values
   }
 }, {
   timestamps: true,

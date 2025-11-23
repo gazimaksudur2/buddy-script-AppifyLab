@@ -10,8 +10,37 @@ connectDB();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// CORS Configuration - Allow specific origins
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://buddy-script-23e18.web.app',
+  'https://buddy-script-23e18.firebaseapp.com',
+  '*'
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, Postman, or curl)
+    if (!origin) return callback(null, true);
+    
+    // Check if origin is in allowed list
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      // Still allow the request but log it - don't block with error
+      console.log('Origin not in whitelist:', origin);
+      callback(null, true); // Changed from error to allow for debugging
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

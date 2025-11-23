@@ -6,6 +6,7 @@ import RightSidebar from '../components/feed/RightSidebar';
 import StoryReel from '../components/feed/StoryReel';
 import CreatePost from '../components/feed/CreatePost';
 import PostCard from '../components/feed/PostCard';
+import MainLayout from '../layouts/MainLayout';
 
 const FeedPage = () => {
   const [posts, setPosts] = useState([]);
@@ -35,11 +36,13 @@ const FeedPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+        
         const [postsRes, storiesRes, suggestionsRes, eventsRes] = await Promise.all([
           postAPI.getPosts(),
           storyAPI.getStories(),
-          axios.get('http://localhost:5000/api/suggestions'),
-          axios.get('http://localhost:5000/api/events')
+          axios.get(`${API_URL}/suggestions`),
+          axios.get(`${API_URL}/events`)
         ]);
 
         setPosts(postsRes.data.posts);
@@ -49,6 +52,9 @@ const FeedPage = () => {
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
+        // Set empty arrays as fallback
+        setSuggestions([]);
+        setEvents([]);
         setLoading(false);
       }
     };
@@ -57,7 +63,7 @@ const FeedPage = () => {
   }, []);
 
   return (
-    <div className="bg-[#F0F2F5] min-h-screen pt-[90px] pb-8">
+    <MainLayout>
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Left Sidebar - 25% width on large screens */}
@@ -81,7 +87,7 @@ const FeedPage = () => {
           </div>
         </div>
       </div>
-    </div>
+    </MainLayout>
   );
 };
 

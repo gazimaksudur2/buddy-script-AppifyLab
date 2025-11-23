@@ -1,21 +1,19 @@
 import React from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import PrivateRoute from "./PrivateRoute";
-import FeedPage from "../pages/FeedPage";
 import LoginPage from "../pages/LoginPage";
 import RegistrationPage from "../pages/RegistrationPage";
-import MainLayout from "../layouts/MainLayout";
+import FeedPage from "../pages/FeedPage";
+import ProfilePage from "../pages/ProfilePage";
+import PrivateRoute from "./PrivateRoute";
 
 const Router = createBrowserRouter([
     {
         path: "/feed",
-        element: (
-            <PrivateRoute>
-                <MainLayout>
-                    <FeedPage />
-                </MainLayout>
-            </PrivateRoute>
-        )
+        element: <PrivateRoute><FeedPage /></PrivateRoute>
+    },
+    {
+        path: "/profile",
+        element: <PrivateRoute><ProfilePage /></PrivateRoute>
     },
     {
         path: "/login",
