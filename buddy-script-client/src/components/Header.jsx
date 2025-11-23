@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
-import Logo from "/public/images/logo.svg";
+import { HiHome, HiUserGroup, HiBell, HiSearch } from "react-icons/hi";
 
 const Header = () => {
 	const { dbUser, logout } = useAuth();
@@ -17,123 +17,90 @@ const Header = () => {
 	};
 
 	return (
-		<nav className="navbar navbar-expand-lg navbar-light _header_nav _padd_t10">
-			<div className="container _custom_container">
-				<div className="_logo_wrap d-flex align-items-center">
-					<Link
-						className="navbar-brand d-flex align-items-center gap-2"
-						to="/feed"
-					>
-						<img src={Logo} alt="Buddy Script" className="_nav_logo" />
-					</Link>
-				</div>
-				<button
-					className="navbar-toggler bg-light"
-					type="button"
-					data-bs-toggle="collapse"
-					data-bs-target="#navbarSupportedContent"
-					aria-controls="navbarSupportedContent"
-					aria-expanded="false"
-					aria-label="Toggle navigation"
-				>
-					<span className="navbar-toggler-icon"></span>
-				</button>
-				<div className="collapse navbar-collapse" id="navbarSupportedContent">
-					<div className="_header_form ms-auto">
-						<form className="_header_form_grp">
-							<svg
-								className="_header_form_svg"
-								xmlns="http://www.w3.org/2000/svg"
-								width="17"
-								height="17"
-								fill="none"
-								viewBox="0 0 17 17"
-							>
-								<circle cx="7" cy="7" r="6" stroke="#666" />
-								<path stroke="#666" strokeLinecap="round" d="M16 16l-3-3" />
-							</svg>
-							<input
-								className="form-control me-2 _inpt1"
-								type="search"
-								placeholder="Search..."
-								aria-label="Search"
-							/>
-						</form>
+		<nav className="navbar bg-white shadow-sm fixed top-0 z-50 h-[70px] px-4 lg:px-8">
+			<div className="flex-1 flex items-center gap-4">
+				{/* Logo */}
+				<Link to="/feed" className="flex-shrink-0">
+					<img src="/images/logo.svg" alt="Buddy Script" className="h-8" />
+				</Link>
+
+				{/* Search */}
+				<div className="hidden md:block w-full max-w-md relative ml-4">
+					<div className="relative">
+						<input
+							type="text"
+							placeholder="Search..."
+							className="input input-bordered w-full h-10 pl-10 rounded-full bg-gray-100 border-transparent focus:bg-white focus:border-primary focus:outline-none transition-all"
+						/>
+						<HiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
 					</div>
-					<ul className="navbar-nav mb-2 mb-lg-0 _header_nav_list ms-auto _mar_r8">
-						<li className="nav-item _header_nav_item">
-							<Link
-								className="nav-link _header_nav_link_active _header_nav_link"
-								to="/feed"
+				</div>
+			</div>
+
+			<div className="flex-none flex items-center gap-2 lg:gap-6">
+				{/* Mobile Search Icon */}
+				<button className="btn btn-ghost btn-circle md:hidden text-gray-600">
+					<HiSearch className="text-xl" />
+				</button>
+
+				{/* Nav Icons */}
+				<div className="flex items-center gap-4 mr-2">
+					<Link
+						to="/feed"
+						className="btn btn-ghost btn-circle text-primary hover:bg-blue-50"
+					>
+						<HiHome className="text-2xl" />
+					</Link>
+					<button className="btn btn-ghost btn-circle text-gray-500 hover:bg-gray-100 hidden sm:flex">
+						<HiUserGroup className="text-2xl" />
+					</button>
+					<div className="indicator">
+						<button className="btn btn-ghost btn-circle text-gray-500 hover:bg-gray-100">
+							<HiBell className="text-2xl" />
+							<span className="badge badge-xs badge-primary indicator-item border-white"></span>
+						</button>
+					</div>
+				</div>
+
+				{/* Profile Dropdown */}
+				<div className="dropdown dropdown-end">
+					<label
+						tabIndex={0}
+						className="btn btn-ghost btn-circle avatar ring-offset-2 focus:ring-2 focus:ring-primary rounded-full p-0 border-none"
+					>
+						<div className="w-10 h-10 rounded-full border border-gray-200">
+							<img
+								src={dbUser?.profilePicture || "/images/Avatar.png"}
+								alt="Profile"
+								className="object-cover w-full h-full"
+							/>
+						</div>
+					</label>
+					<ul
+						tabIndex={0}
+						className="mt-3 z-[1] p-2 shadow-lg menu menu-sm dropdown-content bg-white rounded-xl w-60 border border-gray-100"
+					>
+						<li className="px-4 py-3 border-b border-gray-100 mb-2">
+							<p className="font-semibold text-gray-900 truncate">
+								{dbUser?.fullName || "User"}
+							</p>
+							<p className="text-xs text-gray-500 truncate">{dbUser?.email}</p>
+						</li>
+						<li>
+							<a className="py-2 text-gray-700">My Profile</a>
+						</li>
+						<li>
+							<a className="py-2 text-gray-700">Settings & Privacy</a>
+						</li>
+						<li>
+							<button
+								onClick={handleLogout}
+								className="py-2 text-red-600 hover:bg-red-50"
 							>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									width="18"
-									height="21"
-									fill="none"
-									viewBox="0 0 18 21"
-								>
-									<path
-										className="_home_active"
-										stroke="#000"
-										strokeWidth="1.5"
-										strokeOpacity=".6"
-										d="M1 9.924c0-1.552 0-2.328.314-3.01.313-.682.902-1.187 2.08-2.196l1.143-.98C6.667 1.913 7.732 1 9 1c1.268 0 2.333.913 4.463 2.738l1.142.98c1.179 1.01 1.768 1.514 2.081 2.196.314.682.314 1.458.314 3.01v4.846c0 2.155 0 3.233-.67 3.902-.669.67-1.746.67-3.901.67H5.57c-2.155 0-3.232 0-3.902-.67C1 18.002 1 16.925 1 14.77V9.924z"
-									/>
-									<path
-										className="_home_active"
-										stroke="#000"
-										strokeOpacity=".6"
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth="1.5"
-										d="M11.857 19.341v-5.857a1 1 0 00-1-1H7.143a1 1 0 00-1 1v5.857"
-									/>
-								</svg>
-							</Link>
+								Logout
+							</button>
 						</li>
 					</ul>
-					<div className="_header_dropdown">
-						<button
-							className="_header_dropdown_btn"
-							type="button"
-							id="userDropdown"
-							data-bs-toggle="dropdown"
-							aria-expanded="false"
-						>
-							<img
-								src={dbUser?.profilePicture || "/assets/images/Avatar.png"}
-								alt="Profile"
-								className="_header_profile_img"
-								style={{
-									width: "40px",
-									height: "40px",
-									borderRadius: "50%",
-									objectFit: "cover",
-								}}
-							/>
-						</button>
-						<ul
-							className="dropdown-menu dropdown-menu-end"
-							aria-labelledby="userDropdown"
-						>
-							<li>
-								<span className="dropdown-item-text">
-									<strong>{dbUser?.fullName}</strong>
-									<br />
-									<small className="text-muted">{dbUser?.email}</small>
-								</span>
-							</li>
-							<li>
-								<hr className="dropdown-divider" />
-							</li>
-							<li>
-								<button className="dropdown-item" onClick={handleLogout}>
-									Logout
-								</button>
-							</li>
-						</ul>
-					</div>
 				</div>
 			</div>
 		</nav>

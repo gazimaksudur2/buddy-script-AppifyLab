@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { postAPI } from "../services/api";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/useAuth";
+import { HiPhotograph, HiX } from "react-icons/hi";
 
 const CreatePost = ({ onPostCreated }) => {
 	const { dbUser } = useAuth();
@@ -72,93 +73,90 @@ const CreatePost = ({ onPostCreated }) => {
 	};
 
 	return (
-		<div className="_create_post_card _mar_b24">
+		<div className="bg-white rounded-xl shadow-sm p-4 md:p-6 mb-6">
 			<form onSubmit={handleSubmit}>
-				<div className="_create_post_header">
-					<div className="_create_post_user">
-						<img
-							src={dbUser?.profilePicture || "/assets/images/Avatar.png"}
-							alt="Profile"
-							className="_user_img"
-						/>
-						<div className="_user_info">
-							<h5 className="_user_name">{dbUser?.fullName || "User"}</h5>
-							<select
-								className="_visibility_select form-select form-select-sm"
-								value={visibility}
-								onChange={(e) => setVisibility(e.target.value)}
-							>
-								<option value="public">Public</option>
-								<option value="private">Private</option>
-							</select>
+				<div className="flex items-start gap-4 mb-4">
+					<div className="avatar">
+						<div className="w-10 h-10 rounded-full">
+							<img
+								src={dbUser?.profilePicture || "/images/Avatar.png"}
+								alt="Profile"
+							/>
 						</div>
+					</div>
+
+					<div className="flex-1">
+						<textarea
+							className="textarea textarea-bordered textarea-ghost w-full text-base min-h-[80px] focus:bg-gray-50 resize-none px-0 py-2"
+							placeholder={`What's on your mind, ${
+								dbUser?.firstName || "User"
+							}?`}
+							value={content}
+							onChange={(e) => setContent(e.target.value)}
+							disabled={loading}
+						></textarea>
+
+						{imagePreview && (
+							<div className="relative mt-4 rounded-xl overflow-hidden bg-gray-100">
+								<img
+									src={imagePreview}
+									alt="Preview"
+									className="w-full max-h-[400px] object-cover"
+								/>
+								<button
+									type="button"
+									className="absolute top-2 right-2 btn btn-circle btn-sm btn-neutral opacity-80 hover:opacity-100"
+									onClick={removeImage}
+									disabled={loading}
+								>
+									<HiX className="text-lg" />
+								</button>
+							</div>
+						)}
 					</div>
 				</div>
 
-				<div className="_create_post_body">
-					<textarea
-						className="form-control _post_textarea"
-						placeholder="What's on your mind?"
-						rows="3"
-						value={content}
-						onChange={(e) => setContent(e.target.value)}
-						disabled={loading}
-					></textarea>
+				<div className="divider my-2"></div>
 
-					{imagePreview && (
-						<div className="_image_preview_wrap">
-							<img
-								src={imagePreview}
-								alt="Preview"
-								className="_image_preview"
-							/>
-							<button
-								type="button"
-								className="_remove_image_btn"
-								onClick={removeImage}
-								disabled={loading}
-							>
-								×
-							</button>
-						</div>
-					)}
-				</div>
-
-				<div className="_create_post_footer">
-					<div className="_post_actions">
-						<button
-							type="button"
-							className="_action_btn"
-							onClick={() => fileInputRef.current?.click()}
-							disabled={loading}
-						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="20"
-								height="20"
-								fill="currentColor"
-								viewBox="0 0 16 16"
-							>
-								<path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
-								<path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z" />
-							</svg>
-							Photo
-						</button>
+				<div className="flex items-center justify-between pt-1">
+					<div className="flex items-center gap-2">
 						<input
 							ref={fileInputRef}
 							type="file"
 							accept="image/*"
 							onChange={handleImageChange}
-							style={{ display: "none" }}
+							className="hidden"
 						/>
+						<button
+							type="button"
+							className="btn btn-ghost gap-2 text-gray-600 hover:bg-gray-100 normal-case"
+							onClick={() => fileInputRef.current?.click()}
+							disabled={loading}
+						>
+							<HiPhotograph className="text-xl text-green-500" />
+							<span className="font-medium">Photo/Video</span>
+						</button>
+
+						<select
+							className="select select-sm select-bordered rounded-full ml-2"
+							value={visibility}
+							onChange={(e) => setVisibility(e.target.value)}
+						>
+							<option value="public">Public</option>
+							<option value="private">Private</option>
+						</select>
 					</div>
 
 					<button
 						type="submit"
-						className="btn btn-primary _post_submit_btn"
+						className="btn btn-primary px-6 rounded-xl normal-case font-semibold text-white"
 						disabled={loading || (!content.trim() && !image)}
 					>
-						{loading ? "Posting..." : "Post"}
+						{loading ? (
+							<span className="loading loading-spinner loading-sm"></span>
+						) : (
+							"Post"
+						)}
 					</button>
 				</div>
 			</form>

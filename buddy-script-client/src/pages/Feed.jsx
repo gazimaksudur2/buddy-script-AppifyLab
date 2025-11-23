@@ -60,81 +60,89 @@ const Feed = () => {
 	};
 
 	return (
-		<div className="_layout _layout_main_wrapper">
+		<div className="min-h-screen bg-[#F0F2F5]">
 			<Header />
 
-			<div className="_main_layout">
-				<div className="container _custom_container _padd_t110">
-					<div className="row">
-						{/* Main Feed Column */}
-						<div className="col-xl-8 col-lg-8 col-md-12">
-							{/* Create Post */}
-							<CreatePost onPostCreated={handlePostCreated} />
+			<div className="container mx-auto px-4 pt-[90px] pb-10">
+				<div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+					{/* Main Feed Column */}
+					<div className="lg:col-span-8">
+						{/* Create Post */}
+						<CreatePost onPostCreated={handlePostCreated} />
 
-							{/* Posts Feed */}
-							<div className="_feed_posts">
-								{loading && page === 1 ? (
-									<div className="text-center py-5">
-										<div className="spinner-border text-primary" role="status">
-											<span className="visually-hidden">Loading...</span>
+						{/* Posts Feed */}
+						<div className="flex flex-col gap-6">
+							{loading && page === 1 ? (
+								<div className="text-center py-10">
+									<span className="loading loading-spinner loading-lg text-primary"></span>
+								</div>
+							) : posts.length === 0 ? (
+								<div className="bg-white rounded-xl shadow-sm p-10 text-center">
+									<p className="text-gray-500 text-lg font-medium">
+										No posts yet. Be the first to post!
+									</p>
+								</div>
+							) : (
+								<>
+									{posts.map((post) => (
+										<Post
+											key={post._id}
+											post={post}
+											currentUser={dbUser}
+											onUpdate={handlePostUpdated}
+											onDelete={handlePostDeleted}
+										/>
+									))}
+
+									{hasMore && (
+										<div className="text-center py-4">
+											<button
+												className="btn btn-outline btn-primary btn-wide rounded-full"
+												onClick={loadMore}
+												disabled={loading}
+											>
+												{loading ? (
+													<span className="loading loading-spinner"></span>
+												) : (
+													"Load More"
+												)}
+											</button>
 										</div>
-									</div>
-								) : posts.length === 0 ? (
-									<div className="text-center py-5">
-										<p className="text-muted">
-											No posts yet. Be the first to post!
-										</p>
-									</div>
-								) : (
-									<>
-										{posts.map((post) => (
-											<Post
-												key={post._id}
-												post={post}
-												currentUser={dbUser}
-												onUpdate={handlePostUpdated}
-												onDelete={handlePostDeleted}
-											/>
-										))}
-
-										{hasMore && (
-											<div className="text-center py-4">
-												<button
-													className="btn btn-outline-primary"
-													onClick={loadMore}
-													disabled={loading}
-												>
-													{loading ? "Loading..." : "Load More"}
-												</button>
-											</div>
-										)}
-									</>
-								)}
-							</div>
+									)}
+								</>
+							)}
 						</div>
+					</div>
 
-						{/* Sidebar */}
-						<div className="col-xl-4 col-lg-4 col-md-12">
-							<div className="_feed_sidebar">
-								{/* User Profile Card */}
-								<div className="_feed_sidebar_card _mar_b24">
-									<div className="_feed_profile_card">
-										<div className="_feed_profile_img">
-											<img
-												src={
-													dbUser?.profilePicture || "/assets/images/Avatar.png"
-												}
-												alt="Profile"
-												className="_profile_img"
-											/>
-										</div>
-										<h4 className="_feed_profile_name">
-											{dbUser?.fullName || "User"}
-										</h4>
-										<p className="_feed_profile_email">{dbUser?.email}</p>
-									</div>
+					{/* Sidebar */}
+					<div className="hidden lg:block lg:col-span-4">
+						<div className="sticky top-[100px]">
+							{/* User Profile Card */}
+							<div className="bg-white rounded-xl shadow-sm p-6 text-center">
+								<div className="w-24 h-24 mx-auto mb-4 rounded-full p-1 border border-gray-100">
+									<img
+										src={dbUser?.profilePicture || "/images/Avatar.png"}
+										alt="Profile"
+										className="w-full h-full rounded-full object-cover"
+									/>
+								</div>
+								<h4 className="text-xl font-bold text-gray-900 mb-1">
+									{dbUser?.fullName || "User"}
+								</h4>
+								<p className="text-gray-500 text-sm mb-4">{dbUser?.email}</p>
+
+								<div className="divider my-4"></div>
+
+								<div className="flex justify-between text-sm text-gray-600 px-4">
+									<span>Posts</span>
+									<span className="font-bold text-gray-900">
+										{posts.filter((p) => p.author._id === dbUser?._id).length ||
+											0}
+									</span>
 								</div>
 							</div>
+
+							{/* Suggestions or other widgets could go here */}
 						</div>
 					</div>
 				</div>
