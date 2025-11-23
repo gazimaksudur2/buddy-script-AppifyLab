@@ -1,17 +1,9 @@
 const mongoose = require('mongoose');
 
 const postSchema = new mongoose.Schema({
-  author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-    index: true
-  },
   content: {
     type: String,
-    required: true,
-    trim: true,
-    maxlength: 5000
+    required: [true, 'Content is required']
   },
   imageUrl: {
     type: String,
@@ -20,23 +12,12 @@ const postSchema = new mongoose.Schema({
   visibility: {
     type: String,
     enum: ['public', 'private'],
-    default: 'public',
-    index: true
+    default: 'public'
   },
-  likesCount: {
-    type: Number,
-    default: 0,
-    min: 0
-  },
-  commentsCount: {
-    type: Number,
-    default: 0,
-    min: 0
-  },
-  isDeleted: {
-    type: Boolean,
-    default: false,
-    index: true
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   }
 }, {
   timestamps: true,
@@ -44,26 +25,22 @@ const postSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
-// Compound indexes for efficient queries
-postSchema.index({ author: 1, createdAt: -1 });
-postSchema.index({ visibility: 1, createdAt: -1, isDeleted: 1 });
-postSchema.index({ createdAt: -1, isDeleted: 1 });
-
-// Virtual populate for likes
-postSchema.virtual('likes', {
+// Virtual for likes count
+postSchema.virtual('likesCount', {
   ref: 'Like',
   localField: '_id',
   foreignField: 'targetId',
-  match: { targetType: 'Post', isDeleted: false }
+  count: true,
+  match: { targetType: 'Post' }
 });
 
-// Virtual populate for comments
-postSchema.virtual('comments', {
+// Virtual for comments count
+postSchema.virtual('commentsCount', {
   ref: 'Comment',
   localField: '_id',
   foreignField: 'post',
-  match: { parentComment: null, isDeleted: false }
+  count: true,
+  match: { parentComment: null }
 });
 
 module.exports = mongoose.model('Post', postSchema);
-

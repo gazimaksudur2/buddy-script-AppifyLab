@@ -4,35 +4,23 @@ const likeSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
-    index: true
+    required: true
   },
   targetType: {
     type: String,
     required: true,
-    enum: ['Post', 'Comment'],
-    index: true
+    enum: ['Post', 'Comment']
   },
   targetId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    refPath: 'targetType',
-    index: true
-  },
-  isDeleted: {
-    type: Boolean,
-    default: false,
-    index: true
+    refPath: 'targetType'
   }
 }, {
   timestamps: true
 });
 
-// Compound unique index to prevent duplicate likes
-likeSchema.index({ user: 1, targetType: 1, targetId: 1, isDeleted: 1 }, { unique: true });
-
-// Index for efficient queries
-likeSchema.index({ targetId: 1, targetType: 1, isDeleted: 1 });
+// Compound index to ensure one like per user per target
+likeSchema.index({ user: 1, targetType: 1, targetId: 1 }, { unique: true });
 
 module.exports = mongoose.model('Like', likeSchema);
-
