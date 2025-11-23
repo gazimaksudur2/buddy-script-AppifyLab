@@ -1,8 +1,0 @@
-/* Reuse existing styles from the original HTML files */
-/* This file is intentionally minimal as we're using the existing CSS from assets folder */
-
-.spinner-border {
-  width: 3rem;
-  height: 3rem;
-}
-
